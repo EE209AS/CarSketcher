@@ -1,5 +1,4 @@
 import cv2
-import imutils
 import numpy as np
 import time
 
@@ -15,11 +14,14 @@ def detectRectangle(c):
         return shape
 
 def trackPaper(frame):
-    resized = imutils.resize(frame,width=300)
+
+    resized = cv2.resize(frame, (0,0), fx=0.2, fy=0.2)
     ratio=frame.shape[0]/float(resized.shape[0])
 
     gray=cv2.cvtColor(resized,cv2.COLOR_BGR2GRAY)
     blurred=cv2.GaussianBlur(gray,(5,5),0)
+
+    cv2.imshow("ad",resized)
 
     cv2.normalize(blurred,blurred,0,255,cv2.NORM_MINMAX)
     thresh=cv2.threshold(blurred,150,255,cv2.THRESH_BINARY)[1]
@@ -62,7 +64,7 @@ def trackPaper(frame):
 
 #################################################
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
 width=cap.get(3)
 height=cap.get(4)
@@ -72,7 +74,7 @@ highW=int(float(2)/3*width)
 
 count=0
 while(True):
-    
+
     keypressed=cv2.waitKey(1) & 0xFF
     if keypressed == ord('q'):
         break
