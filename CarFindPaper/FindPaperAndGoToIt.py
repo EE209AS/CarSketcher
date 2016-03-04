@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import time
+import subprocess as sp
 
 def detectRectangle(c):
         shape=False
@@ -31,6 +31,8 @@ def trackPaper(frame):
     areaMax=0
     cXMax=-1
     cYMax=-1
+    cX=-1
+    cY=-1
     contourMax=[]
     for c in contours:
             shape = detectRectangle(c)
@@ -51,9 +53,6 @@ def trackPaper(frame):
                         contourMax=c
                         cXMax=cX
                         cYMax=cY
-            else:
-                cX=-1
-                cY=-1
 
     # if areaMax != 0:
         # contourMax = contourMax*ratio
@@ -62,7 +61,30 @@ def trackPaper(frame):
         # cv2.circle(frame,(cXMax,cYMax),5,(0,0,255),-1)
     return (frame, cXMax, cYMax)
 
+def ReadCameraData(cap):
+    ret, frame = cap.read()
+    (frameTrack, cx, cy)=trackPaper(frame)
+    return (frameTrack, cx, cy)
+
+def CarControl(ctr):
+    # test if this is exit when the car stop turnning, I am not sure about that since this just run a cmd line
+    if ctr==0:
+        sp.call(['./', "straight.out"])
+    elif ctr==1:
+        sp.call(['./', "left.out"])
+    elif ctr==2:
+        sp.call(['./', "right.out"])
+    else:
+        sp.call(['./', "stop.out"])
+
+def Finish(string):
+    print string
+
+
+
 #################################################
+
+
 
 cap = cv2.VideoCapture(0)
 
@@ -72,34 +94,27 @@ lowW=int(float(1)/3*width)
 highW=int(float(2)/3*width)
 
 
-count=0
 while(True):
 
     keypressed=cv2.waitKey(1) & 0xFF
     if keypressed == ord('q'):
         break
 
-    time.sleep(1)
-
-    ret, frame = cap.read()
-
-    (frameTrack, cx, cy)=trackPaper(frame)
-
-    # cv2.rectangle(frameTrack,(lowW,0),(highW,int(height)),(0,0,255),5)
+    (frameTrack, cx, cy) = ReadCameraData(cap)
 
     if cx != -1:
         if cx>lowW and cx< highW:
-            # cv2.putText(frameTrack,"Correct",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
-            print "Correct"
+            CarControl(0)
+            Finish("Go Straight Finished")
         elif cx<lowW:
-            # cv2.putText(frameTrack,"Turn Left",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
-            print "Left"
+            CarControl(1)
+            Finish("Left Finished")
+        elif cx>highW:
+            CarControl(2)
+            Finish("Right Finished")
         else:
-            # cv2.putText(frameTrack,"Turn Right",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
-            print "Right"
-
-    cv2.imshow('frameTrack',frameTrack)
-
+            CarControl(3)
+            Finish("Stop Finished")
 
 
 cap.release()
