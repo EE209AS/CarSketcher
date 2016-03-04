@@ -23,8 +23,6 @@ def trackPaper(frame):
     cv2.normalize(blurred,blurred,0,255,cv2.NORM_MINMAX)
     thresh=cv2.threshold(blurred,150,255,cv2.THRESH_BINARY)[1]
 
-    cv2.imshow("thresh",thresh)
-
     contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
     areaMax=0
@@ -57,8 +55,8 @@ def trackPaper(frame):
     if areaMax != 0:
         contourMax = contourMax*ratio
         contourMax=np.int0(contourMax)
-        cv2.drawContours(frame, [contourMax], 0, (0, 255, 0), 5)
-        cv2.circle(frame,(cXMax,cYMax),5,(0,0,255),-1)
+        # cv2.drawContours(frame, [contourMax], 0, (0, 255, 0), 5)
+        # cv2.circle(frame,(cXMax,cYMax),5,(0,0,255),-1)
     return (frame, cXMax, cYMax)
 
 #################################################
@@ -76,29 +74,28 @@ print width,height,lowW,highW,lowH,highH
 
 
 while(True):
-    # Capture frame-by-frame
     ret, frame = cap.read()
 
-    # Our operations on the frame come here
     (frameTrack, cx, cy)=trackPaper(frame)
 
-    cv2.rectangle(frameTrack,(lowW,0),(highW,int(height)),(0,0,255),5)
+    # cv2.rectangle(frameTrack,(lowW,0),(highW,int(height)),(0,0,255),5)
 
     if cx != -1:
         if cx>lowW and cx< highW:
-            cv2.putText(frameTrack,"Correct",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
+            # cv2.putText(frameTrack,"Correct",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
+            
         elif cx<lowW:
-            cv2.putText(frameTrack,"Turn Left",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
+            # cv2.putText(frameTrack,"Turn Left",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
         else:
-            cv2.putText(frameTrack,"Turn Right",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
+            # cv2.putText(frameTrack,"Turn Right",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
 
-    # Display the resulting frame
-    cv2.imshow('frameTrack',frameTrack)
+
+    # cv2.imshow('frameTrack',frameTrack)
 
     keypressed=cv2.waitKey(1) & 0xFF
     if keypressed == ord('q'):
         break
 
-# When everything done, release the ccapture
+
 cap.release()
 cv2.destroyAllWindows()
