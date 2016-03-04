@@ -1,6 +1,7 @@
 import cv2
 import imutils
 import numpy as np
+import time
 
 def detectRectangle(c):
         shape=False
@@ -26,8 +27,8 @@ def trackPaper(frame):
     contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
     areaMax=0
-    cXMax=0
-    cYMax=0
+    cXMax=-1
+    cYMax=-1
     contourMax=[]
     for c in contours:
             shape = detectRectangle(c)
@@ -52,28 +53,32 @@ def trackPaper(frame):
                 cX=-1
                 cY=-1
 
-    if areaMax != 0:
-        contourMax = contourMax*ratio
-        contourMax=np.int0(contourMax)
+    # if areaMax != 0:
+        # contourMax = contourMax*ratio
+        # contourMax=np.int0(contourMax)
         # cv2.drawContours(frame, [contourMax], 0, (0, 255, 0), 5)
         # cv2.circle(frame,(cXMax,cYMax),5,(0,0,255),-1)
     return (frame, cXMax, cYMax)
 
 #################################################
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 width=cap.get(3)
 height=cap.get(4)
 lowW=int(float(1)/3*width)
 highW=int(float(2)/3*width)
-lowH=int(float(1)/3*height)
-highH=int(float(2)/3*height)
-
-print width,height,lowW,highW,lowH,highH
 
 
+count=0
 while(True):
+    
+    keypressed=cv2.waitKey(1) & 0xFF
+    if keypressed == ord('q'):
+        break
+
+    time.sleep(1)
+
     ret, frame = cap.read()
 
     (frameTrack, cx, cy)=trackPaper(frame)
@@ -83,18 +88,16 @@ while(True):
     if cx != -1:
         if cx>lowW and cx< highW:
             # cv2.putText(frameTrack,"Correct",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
-            
+            print "Correct"
         elif cx<lowW:
             # cv2.putText(frameTrack,"Turn Left",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
+            print "Left"
         else:
             # cv2.putText(frameTrack,"Turn Right",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
+            print "Right"
 
+    cv2.imshow('frameTrack',frameTrack)
 
-    # cv2.imshow('frameTrack',frameTrack)
-
-    keypressed=cv2.waitKey(1) & 0xFF
-    if keypressed == ord('q'):
-        break
 
 
 cap.release()
