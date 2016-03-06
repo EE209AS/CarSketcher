@@ -109,3 +109,5 @@ class FindPaperReturnFrame:
         # buf is the jpg to show and ctr is the control predicted
 
         return (buf, ctr)
+
+
