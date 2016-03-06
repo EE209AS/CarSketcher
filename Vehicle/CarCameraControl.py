@@ -13,7 +13,7 @@ class CarCameraControl:
 
     # Camera Control
     def InitCamera(self):
-        self.cap = cv2.VideoCapture(1)
+        self.cap = cv2.VideoCapture(0)
         self.width=self.cap.get(3)
         self.height=self.cap.get(4)
 
@@ -39,6 +39,7 @@ class CarCameraControl:
     def convert2jpg(self, frame):
         retval,buf = cv2.imencode('.jpg', frame)
         return buf
+        
 
     # # Movement Control
     # def goStraight(self):
