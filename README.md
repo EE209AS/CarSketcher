@@ -10,4 +10,4 @@
 7, During the car approaching, it does serveral 3D reconstruction  
 8, When the car get close (<30cm) to the paper, it start approach the paper by using the info gathered through 3d recon  
 9, Then the car should move to one corner of the paper and send back to webpage that the car is ready to draw  
-10, The user press Draw button and the car start drawing  
+10, The user press StartDraw button and the car start drawing  
