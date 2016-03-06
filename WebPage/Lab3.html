@@ -44,6 +44,11 @@
 
 		<script>
 
+		function refresh(){
+			document.getElementById("cap"+ 1).src = "lol";
+			document.getElementById("cap"+ 2).src = "lol";
+		}
+
 		var start=false;
 		
 		var id;
@@ -69,8 +74,11 @@
 
 			xhttp.open("POST", host + '/?Action=Capture'
 				+ '&Name=' + imgname, true);
-			xhttp.send();		
-			document.getElementById("cap"+ number).src = host + '/' + imgname;
+			xhttp.send();
+
+			setTimeout(function(){
+    			document.getElementById("cap"+ number).src = host + '/' + imgname;
+			}, 1000);
 		}
    //      function pageLoad(){
    //          var can = document.getElementById('can');
@@ -139,6 +147,9 @@
    //          }
    //          setInterval(updateCanvas, 1000);
    //      }
+
+
+
     </script>
 	</head>
 
@@ -154,7 +165,7 @@
 
 
 
-	<body>
+	<body onload="refresh()">
 		<main class="wrapper">
 
 			<nav class="navigation">
