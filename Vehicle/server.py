@@ -3,7 +3,7 @@ import subprocess as sp
 import cgi
 import urlparse
 import json, sys, os, re
-
+from CarCameraControl import CarCameraControl as CCC
 
 maxNumBytes = 100
 
@@ -69,14 +69,19 @@ class PostHandler(BaseHTTPRequestHandler):
         ## Edison control 
         # capture the image and save as the specific name
         if form['Action'][0] == 'Capture':
-            # dummy
-            f = open('sample.jpg', 'rb')
-            img = f.read()
-            f.close()
+            # # dummy
+            # f = open('sample.jpg', 'rb')
+            # img = f.read()
+            # f.close()
+            camera = CCC()
+            camera.InitCamera()
+            frame = camera.GetOneVideoFrame()
+            img = camera.convert2jpg(frame)
             # write file
             f2 = open(form['Name'][0], 'wb')
             f2.write(img)
             f2.close()
+            camera.DestroyCamera()
             # self.wfile.write(img)       
             # self.send_header('Content-Type', 'image/jpeg')        
         else:
