@@ -49,8 +49,8 @@ class PostHandler(BaseHTTPRequestHandler):
         _form = cgi.FieldStorage(
             fp=self.rfile,
             headers=self.headers,
-            environ={'REQUEST_METHOD':'POST',
-                     'CONTENT_TYPE':self.headers['Content-Type'],
+            environ={'REQUEST_METHOD':'POST'
+
                      })
         parsed_path = urlparse.urlparse(self.path)
         query = parsed_path[4]
@@ -76,6 +76,7 @@ class PostHandler(BaseHTTPRequestHandler):
             camera = CCC()
             camera.InitCamera()
             frame = camera.GetOneVideoFrame()
+            #print frame
             img = camera.convert2jpg(frame)
             # write file
             f2 = open(form['Name'][0], 'wb')
