@@ -17,7 +17,7 @@ class CarCameraControl:
         self.width=self.cap.get(3)
         self.height=self.cap.get(4)
 
-    def DestroyCamera(self):
+    def DestoryCamera(self):
         self.cap.release()
 
     def GetOneVideoFrame(self):
@@ -36,10 +36,7 @@ class CarCameraControl:
         corners = np.int0(corners)
         return corners
 
-    def convert2jpg(self, frame):
-        retval,buf = cv2.imencode('.jpg', frame)
-        return buf
-        
+
 
     # # Movement Control
     # def goStraight(self):
