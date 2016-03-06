@@ -4,6 +4,7 @@ import cgi
 import urlparse
 import json, sys, os, re
 from CarCameraControl import CarCameraControl as CCC
+from FindPaperReturnFrame import FindPaperReturnFrame
 
 maxNumBytes = 100
 
@@ -75,9 +76,17 @@ class PostHandler(BaseHTTPRequestHandler):
             # f.close()
             camera = CCC()
             camera.InitCamera()
-            frame = camera.GetOneVideoFrame()
+            fname = form['Name'][0]
+            if 'sample' in fname:
+                frame = camera.GetOneVideoFrame()
+                img = camera.convert2jpg(frame)
+            elif 'bolder' in fname:
+                fp=FindPaperReturnFrame(camera.width, camera.height)
+                img, ctr=fp.ReadCameraDataReturnJPG(frame)
+            else:
+                return   
             #print frame
-            img = camera.convert2jpg(frame)
+            
             # write file
             f2 = open(form['Name'][0], 'wb')
             f2.write(img)
