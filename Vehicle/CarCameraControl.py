@@ -36,6 +36,10 @@ class CarCameraControl:
         corners = np.int0(corners)
         return corners
 
+    def ConvertFrameToJPG(self, frame):
+        retval, buf=cv2.imencode('.jpg',frame)
+        retrun buf
+
 
 
     # # Movement Control
