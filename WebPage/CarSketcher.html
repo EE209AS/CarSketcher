@@ -36,35 +36,44 @@
 		<script>
 
 			var count = 0;
-
+			var loading = false;
 			function body_onload(){
 				document.getElementById("cap"+ 1).src = "lol";
 				document.getElementById("cap"+ 2).src = "lol";
-
+				loading = false;
+				// reload_video_image();
+			}
+			function stop_video() {
+				loading = false;
+			}
+			function start_video() {
+				function reload_video_image(){
+	    			//var pic=document.getElementById("cap_video");
+	    			
+	    			// TODO load new imges
+	    			// if(count%2==0){
+	    			// 	var img='1.jpg';
+	    			// }
+	    			// else{
+	    			// 	var img='2.jpg';
+	    			// }
+	    			// img = 
+	    			// pic.src=img;
+	    			// count++;
+	    			// window.setTimeout(reload_video_image,2000);
+	    			if (!loading)
+	    				return 
+	    			capture('_video', 2000)
+	    			window.setTimeout(reload_video_image,1000)
+				}				
+				loading = true;
 				reload_video_image();
 			}
-
-			function reload_video_image(){
-    			var pic=document.getElementById("videoDisplay");
-    			
-    			// TODO load new imges
-    			if(count%2==0){
-    				var img='1.jpg';
-    			}
-    			else{
-    				var img='2.jpg';
-    			}
-    			pic.src=img;
-    			count++;
-    			window.setTimeout(reload_video_image,1000);
-			}
-
 
 			var start=false;
 			
 			var id;
 			function btnClick(browser) {
-
 								
 			}
 
@@ -184,8 +193,10 @@
 				<p>
 					<ul>
 					<h5 class="title">Video Stream</h5>
+					<input class="button" name="Action" value="Start" onclick="start_video()"></input>
+					<input class="button" name="Action" value="Stop" onclick="stop_video()"></input>
 					<p>
-						<img id="videoDisplay" alt=video src="">
+						<img id="cap_video" alt=video src="">
 
 					</p>
 				</ul>
