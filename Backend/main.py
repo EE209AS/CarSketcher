@@ -3,6 +3,7 @@ import urllib2, urllib
 from reconstruct import reproject
 from CarCameraControl import CarCameraControl as CCC
 import numpy as np
+from FindPaperReturnFrame import FindPaperReturnFrame
 
 host = 'http://172.20.10.4:8000/'
 # translation from camera frame to vehicle frame
@@ -61,6 +62,7 @@ def calcCor():
     return X_car[:2]
 
 if __name__ == "__main__":
+
     if sys.argv[1] == 'dl':
         iname = 'sample' + sys.argv[2] + '.jpg'
         print getImage(iname)
