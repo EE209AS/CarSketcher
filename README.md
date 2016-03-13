@@ -21,7 +21,7 @@
   - Start button for overall 
   - Textview to show the car current status and give instr to user
   - Video stream back
-  - Car control to control the car to the desired position to capture picture
+  - Car control buttons to control the car to the desired position to capture picture
   - Button to capture the image for sketcher
   - Image on the web page to show what will draw on the paper
   - Button to control the car start find the paper and approach it
