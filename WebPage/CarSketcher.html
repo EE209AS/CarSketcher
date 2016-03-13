@@ -47,6 +47,8 @@
 				loading = false;
 			}
 			function start_video() {
+				loading = true;
+				var count = 0;
 				function reload_video_image(){
 	    			//var pic=document.getElementById("cap_video");
 	    			
@@ -62,8 +64,14 @@
 	    			// count++;
 	    			// window.setTimeout(reload_video_image,2000);
 	    			if (!loading)
-	    				return 
-	    			capture('_video', 2000)
+	    				return
+	    			var name;
+	    			if (count % 2)
+	    				name = 'sample_video1';
+	    			else 
+	    				name = 'sample_video2';
+	    			count++;
+	    			capture(name, 2000)
 	    			window.setTimeout(reload_video_image,1000)
 				}				
 				loading = true;
@@ -77,12 +85,13 @@
 								
 			}
 
-			function capture(number) {
+			function capture(name) {
+				// name not including suffix
 				var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function() {
 								if (xhttp.readyState == 4 && xhttp.status == 200) {
 												// id = parseInt(xhttp.responseText);
-									console.log('get Image' + number)
+									console.log('get Image' + name)
 
 								}
 
@@ -90,14 +99,16 @@
 				host = document.getElementById('ip1').value;
 				if (host.indexOf('http') == -1)
 					host = 'http://' + host;
-				imgname = 'sample' + number + '.jpg';
+				imgname = name + '.jpg';
 
 				xhttp.open("POST", host + '/?Action=Capture'
 					+ '&Name=' + imgname, true);
 				xhttp.send();
 
+				if (name.indexOf('video') != -1)
+					name = 'sample_video';
 				setTimeout(function(){
-	    			document.getElementById("cap"+ number).src = host + '/' + imgname;
+	    			document.getElementById(name).src = host + '/' + imgname;
 				}, 1000);
 			}
 
@@ -173,15 +184,15 @@
 							<li>
 								<font size="4">Cap 1</font>
 								<!--<canvas id="can" width="900px" height="366px">4</canvas> -->
-								<input class="button" type="submit" name="Action" value="Capture" onclick="capture(1)"></input>
-								<img id='cap1' src="sample1.jpg">
+								<input class="button" type="submit" name="Action" value="Capture" onclick="capture('sample1')"></input>
+								<img id='sample1' src="sample1.jpg">
 							</li>
 
 							<hr />
 							<li>
 								<font size="4">Cap 2</font>
-								<input class="button" type="submit" name="Action" value="Capture" onclick="capture(2)"></input>
-								<img id='cap2' src="sample2.jpg">
+								<input class="button" type="submit" name="Action" value="Capture" onclick="capture('sample2')"></input>
+								<img id='sample2' src="sample2.jpg">
 							</li>
 						</ol>
 
@@ -196,7 +207,7 @@
 					<input class="button" name="Action" value="Start" onclick="start_video()"></input>
 					<input class="button" name="Action" value="Stop" onclick="stop_video()"></input>
 					<p>
-						<img id="cap_video" alt=video src="">
+						<img id="sample_video" alt=video src="">
 
 					</p>
 				</ul>

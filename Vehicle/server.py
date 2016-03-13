@@ -81,6 +81,7 @@ class PostHandler(BaseHTTPRequestHandler):
                 frame = camera.GetOneVideoFrame()
                 img = camera.convert2jpg(frame)
             elif 'bolder' in fname:
+                frame = camera.GetOneVideoFrame()
                 fp=FindPaperReturnFrame(camera.width, camera.height)
                 img, ctr=fp.ReadCameraDataReturnJPG(frame)
             else:

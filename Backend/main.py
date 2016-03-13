@@ -5,7 +5,7 @@ from CarCameraControl import CarCameraControl as CCC
 import numpy as np
 from FindPaperReturnFrame import FindPaperReturnFrame
 
-host = 'http://172.20.10.4:8000/'
+host = 'http://192.168.43.29:8000/'
 # translation from camera frame to vehicle frame
 R = np.identity(3)
 T = np.zeros((3,1))
@@ -47,8 +47,12 @@ def capture(name):
 def calcCor():
     css = []
     ccc = CCC()
+
     for i in range(1,3):
-        corners = ccc.Get4Corners('sample' + str(i) + '.jpg')
+        # corners = ccc.Get4Corners('sample' + str(i) + '.jpg')
+        frame = cv2.imread('sample' + str(i) + '.jpg')
+        fp=FindPaperReturnFrame(ccc.width, ccc.height)
+        img, ctr=fp.ReadCameraDataReturnJPG(frame)
         cs = []
         for i in corners:
             x,y = i.ravel()
@@ -62,6 +66,9 @@ def calcCor():
     return X_car[:2]
 
 if __name__ == "__main__":
+    '''
+        usage: python main.py cap 1 --> cap 2 --> dl 1 --> dl 2 --> calc
+    '''
 
     if sys.argv[1] == 'dl':
         iname = 'sample' + sys.argv[2] + '.jpg'
