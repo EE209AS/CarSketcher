@@ -11,3 +11,57 @@
 8, When the car get close (<30cm) to the paper, it start approach the paper by using the info gathered through 3d recon  
 9, Then the car should move to one corner of the paper and send back to webpage that the car is ready to draw  
 10, The user press StartDraw button and the car start drawing  
+
+
+## TODO !!!!!  
+#### Webpage
+
+* Rearrange the web page. The web page should contain:
+  - IP address input
+  - Start button for overall 
+  - Textview to show the car current status and give instr to user
+  - Video stream back
+  - Car control buttons to control the car to the desired position to capture picture
+  - Button to capture the image for sketcher
+  - Image on the web page to show what will draw on the paper
+  - Button to control the car start find the paper and approach it
+  - Button to start drawing on the paper  
+  
+#### Vehicle
+
+* Add car control
+  - go straight
+  - stop
+  - left
+  - right
+  - Capture the image to draw
+  - start find paper
+    - Roughly find the paper
+    - 3d-recon to approach
+  - start drawing  
+  
+* Send back the car feedback status  
+* Send back the image to draw
+* Send back the video
+
+#### Backend
+* Update the algorithm to find corners
+* ...
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
