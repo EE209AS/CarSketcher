@@ -36,9 +36,11 @@
   - right
   - Capture the image to draw
   - start find paper
+    - Roughly find the paper
+    - 3d-recon to approach
   - start drawing  
   
-* Send back the car feedback status
+* Send back the car feedback status  
 * Send back the image to draw
 * Send back the video
 
