@@ -21,12 +21,12 @@
 		<script>
 			var count = 0;
 			var loading = false;
-			function body_onload(){
-				document.getElementById("cap"+ 1).src = "lol";
-				document.getElementById("cap"+ 2).src = "lol";
-				loading = false;
-				// reload_video_image();
-			}
+			// function body_onload(){
+			// 	document.getElementById("cap"+ 1).src = "lol";
+			// 	document.getElementById("cap"+ 2).src = "lol";
+			// 	loading = false;
+			// 	// reload_video_image();
+			// }
 			function stop_video() {
 				loading = false;
 			}
@@ -59,9 +59,7 @@
 								if (xhttp.readyState == 4 && xhttp.status == 200) {
 												// id = parseInt(xhttp.responseText);
 									console.log('get Image' + name)
-
 								}
-
 				}
 				host = document.getElementById('ip1').value;
 				if (host.indexOf('http') == -1)
@@ -79,37 +77,50 @@
 				}, 1000);
 			}
 
+			function sendRequest(request){
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+						if (xhttp.readyState == 4 && xhttp.status == 200) {
+								console.log("request send successfully");
+						}
+				}
+				host = document.getElementById('ip1').value;
+				if (host.indexOf('http') == -1){
+						host = 'http://' + host;
+				}
+				xhttp.open("POST", host + '/?Action=' + request, true);
+				xhttp.send();
+			}
+
 
 
 			function btnClick(browser) {
 					switch (browser) {
 						case "start":
-							alert("start");
+							sendRequest("start");
 							break;
 						case "find":
-							alert("find");
+							sendRequest("find");
 							break;
 						case "draw":
-							alert("draw");
+							sendRequest("draw");
 							break;
 						case "go":
-							alert("go");
+							sendRequest("go");
 							break;
 						case "stop":
-							alert("stop");
+							sendRequest("stop");
 							break;
 						case "left":
-							alert("left");
+							sendRequest("left");
 							break;
 						case "right":
-							alert("right");
+							sendRequest("right");
 							break;
 						case "capture":
-							alert("capture");
+							sendRequest("capture");
 							break;
-
 						default:
-
 					}
 			}
 
