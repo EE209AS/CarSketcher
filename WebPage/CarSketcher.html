@@ -12,29 +12,13 @@
 		<link rel="stylesheet" href="style.css">
 		<link rel="icon" href="MegaMinimal.png">
 		<link href="./skins/all.css?v=1.0.2" rel="stylesheet">
-		<style type="text/css">
-      canvas { display:block; margin:1em auto; border:1px solid black; background:url(bgCanvas.jpg)}
-    </style>
-
 		<script>window.jQuery || document.write('<script src="jquery.js">\x3C/script>');</script>
 		<script src="./js/jquery.js"></script>
 		<script src="./icheck.js?v=1.0.2"></script>
 		<script src="./js/custom.min.js?v=1.0.2"></script>
 
-		<script>
-			$(document).ready(function(){
-			  $('input').iCheck({
-					checkboxClass: 'icheckbox_square-blue',
-			    radioClass: 'iradio_square-blue',
-			    increaseArea: '20%' // optional
-			  });
-			});
-
-	
-		</script>
 
 		<script>
-
 			var count = 0;
 			var loading = false;
 			function body_onload(){
@@ -47,42 +31,34 @@
 				loading = false;
 			}
 			function start_video() {
+				loading = true;
+				var count = 0;
 				function reload_video_image(){
-	    			//var pic=document.getElementById("cap_video");
-	    			
-	    			// TODO load new imges
-	    			// if(count%2==0){
-	    			// 	var img='1.jpg';
-	    			// }
-	    			// else{
-	    			// 	var img='2.jpg';
-	    			// }
-	    			// img = 
-	    			// pic.src=img;
-	    			// count++;
-	    			// window.setTimeout(reload_video_image,2000);
 	    			if (!loading)
-	    				return 
-	    			capture('_video', 2000)
+	    				return
+	    			var name;
+	    			if (count % 2)
+	    				name = 'sample_video1';
+	    			else
+	    				name = 'sample_video2';
+	    			count++;
+	    			capture(name, 2000)
 	    			window.setTimeout(reload_video_image,1000)
-				}				
+				}
 				loading = true;
 				reload_video_image();
 			}
 
 			var start=false;
-			
-			var id;
-			function btnClick(browser) {
-								
-			}
 
-			function capture(number) {
+			var id;
+			function capture(name) {
+				// name not including suffix
 				var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function() {
 								if (xhttp.readyState == 4 && xhttp.status == 200) {
 												// id = parseInt(xhttp.responseText);
-									console.log('get Image' + number)
+									console.log('get Image' + name)
 
 								}
 
@@ -90,28 +66,57 @@
 				host = document.getElementById('ip1').value;
 				if (host.indexOf('http') == -1)
 					host = 'http://' + host;
-				imgname = 'sample' + number + '.jpg';
+				imgname = name + '.jpg';
 
 				xhttp.open("POST", host + '/?Action=Capture'
 					+ '&Name=' + imgname, true);
 				xhttp.send();
 
+				if (name.indexOf('video') != -1)
+					name = 'sample_video';
 				setTimeout(function(){
-	    			document.getElementById("cap"+ number).src = host + '/' + imgname;
+	    			document.getElementById(name).src = host + '/' + imgname;
 				}, 1000);
 			}
 
+
+
+			function btnClick(browser) {
+					switch (browser) {
+						case "start":
+							alert("start");
+							break;
+						case "find":
+							alert("find");
+							break;
+						case "draw":
+							alert("draw");
+							break;
+						case "go":
+							alert("go");
+							break;
+						case "stop":
+							alert("stop");
+							break;
+						case "left":
+							alert("left");
+							break;
+						case "right":
+							alert("right");
+							break;
+						case "capture":
+							alert("capture");
+							break;
+
+						default:
+
+					}
+			}
+
     </script>
+
+
 	</head>
-
-
-
-
-
-
-
-
-
 
 
 
@@ -153,56 +158,57 @@
 
 				<p>
 					<ul>
-            <h5 class="title">Vehicle Control Panel</h5>
-				<ol>
-							
-	            <input class="button" type="submit" name="Action" value="down" onclick="btnClick(this.value)"></input>
-				<input class="button button-outline" type="submit" name="back" value="Stop" onclick="btnClick(this.value)"></input>
-				<input class="button" type="submit" name="Action" value="left" onclick="btnClick(this.value)"></input>
-				<input class="button button-outline" type="submit" name="right" value="Right" onclick="btnClick(this.value)"></input>
-				</ol>
+            <h5 class="title">System Control Panel</h5>
+						<ol>
+							<input class="button" type="submit" name="Action" value="start" onclick="btnClick(this.value)"></input>
+							<input class="button" type="submit" name="Action" value="find" onclick="btnClick(this.value)"></input>
+							<input class="button" type="submit" name="Action" value="draw" onclick="btnClick(this.value)"></input>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<font size="4">Car Status: </font><font size="5" id="distance">Ready for Start</font>
+						</ol>
+
+						<h5 class="title">Video Stream</h5>
+						<!-- <input class="button" name="Action" value="Start" onclick="start_video()"></input>
+						<input class="button" name="Action" value="Stop" onclick="stop_video()"></input> -->
+						<ol>
+							<img id="sample_video" alt=video src="" width="320" height="240">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<img id="img_to_draw" alt=img src="" width="320" height="240">
+						</ol>
+						<ol>
+			            <input class="button button-outline" type="submit" name="Action" value="go" onclick="btnClick(this.value)"></input>
+									<input class="button button-outline" type="submit" name="Action" value="stop" onclick="btnClick(this.value)"></input>
+									<input class="button button-outline" type="submit" name="Action" value="left" onclick="btnClick(this.value)"></input>
+									<input class="button button-outline" type="submit" name="Action" value="right" onclick="btnClick(this.value)"></input>
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<input class="button button-clear" type="submit" name="Action" value="capture" onclick="btnClick(this.value)"></input>
+						</ol>
 					</ul>
 				</p>
 
-				<p>
+
+
+
+				<!-- <p>
 					<ul>
 					<h5 class="title">Captured Image Display</h5>
 					<p>
-
 						<ol>
 							<li>
 								<font size="4">Cap 1</font>
-								<!--<canvas id="can" width="900px" height="366px">4</canvas> -->
-								<input class="button" type="submit" name="Action" value="Capture" onclick="capture(1)"></input>
-								<img id='cap1' src="sample1.jpg">
+								<input class="button" type="submit" name="Action" value="Capture" onclick="capture('sample1')"></input>
+								<img id='sample1' src="sample1.jpg">
 							</li>
-
 							<hr />
 							<li>
 								<font size="4">Cap 2</font>
-								<input class="button" type="submit" name="Action" value="Capture" onclick="capture(2)"></input>
-								<img id='cap2' src="sample2.jpg">
+								<input class="button" type="submit" name="Action" value="Capture" onclick="capture('sample2')"></input>
+								<img id='sample2' src="sample2.jpg">
 							</li>
 						</ol>
-
 					</p>
 				</ul>
-				</p>
-
-
-				<p>
-					<ul>
-					<h5 class="title">Video Stream</h5>
-					<input class="button" name="Action" value="Start" onclick="start_video()"></input>
-					<input class="button" name="Action" value="Stop" onclick="stop_video()"></input>
-					<p>
-						<img id="cap_video" alt=video src="">
-
-					</p>
-				</ul>
-				</p>
-
-
+				</p> -->
 
       </section>
 

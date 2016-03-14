@@ -10,7 +10,7 @@ K = np.array([[1.19944599e+03,0.00000000e+00,6.03668941e+02],
 distort = np.array([[-0.06274979, 0.17771384, -0.00146246, 0.00585943, -0.26509556]])
 K_inv = np.linalg.inv(K)
 # plane-depth -- cm
-plane_depth = 1
+# plane_depth = 1
 
 def computeDesc(gray, pts, size=20):
     '''
@@ -49,6 +49,7 @@ def lstsql3d(R, T, x1,x2):
     return lamda * np.array([x1[0], x1[1], 1]).T
 
 def SelectionXtrans(img1, img2, Rs, Ts):
+
     kp1,des1 = fE.getDescriptor(img1)
     kp2,des2 = fE.getDescriptor(img2)
     matches = fE.getMatches(des1,des2,count=200)
@@ -72,7 +73,7 @@ def SelectionXtrans(img1, img2, Rs, Ts):
         return 1
     else:
         return 0
-def reproject(imgname1, imgname2, corners1, corners2):
+def reproject(imgname1, imgname2, corners1, corners2, plane_depth):
     '''
         return the coordinate of the first image!
     '''
@@ -88,7 +89,7 @@ def reproject(imgname1, imgname2, corners1, corners2):
     kp2,des2 = computeDesc(img2, pts2)
     # lower the threshold to pass the test!!
     matches = fE.getMatches(des1,des2,threshold=0.8) #, kp1, kp2, img1, img2)
-    print len(matches), ' is length of matches!'
+    # print len(matches), ' is length of matches!'
     if (len(matches) < 4):
         raise NameError('all 4 corners are not matched!')
     pts1,pts2 = fE.getMatchPts(matches, kp1, kp2)
@@ -114,6 +115,7 @@ def reproject(imgname1, imgname2, corners1, corners2):
     # print np.dot(H - rotations[2], normals[2])
     ###################################################################
     # calculate 3d, "T" is in unit of plane-depth -- d
+
     Rs = []
     Ts = []
     for i, n in enumerate(normals):
@@ -121,6 +123,8 @@ def reproject(imgname1, imgname2, corners1, corners2):
             Rs.append(rotations[i])
             Ts.append(translations[i])
     # print Rs, Ts
+    if len(Rs) == 0:
+        raise NameError('Cannot decompose Homography Matrix -- correspondences are wrong!')
     # no more shit we can do right now, we need more correspondences!
     iResult = SelectionXtrans(img1, img2, Rs, Ts)
     R = Rs[iResult]
@@ -136,6 +140,6 @@ def reproject(imgname1, imgname2, corners1, corners2):
         Xs.append(plane_depth * lstsql3d(R, T, x1, x2))
 
     # print np.linalg.norm(Xs[0] - Xs[1]) 
-    print Xs
+    return Xs
 
 
