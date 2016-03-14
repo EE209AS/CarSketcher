@@ -1,6 +1,6 @@
 from BaseHTTPServer import BaseHTTPRequestHandler
 import subprocess as sp
-import cgi
+import cgi,time
 import urlparse
 import json, sys, os, re
 from CarCameraControl import CarCameraControl as CCC
@@ -66,10 +66,10 @@ class PostHandler(BaseHTTPRequestHandler):
         self.send_response(200)        
         self.send_header('Access-Control-Allow-Origin', origin)         #browser required
         self.send_header('Access-Control-Allow-Methods', 'POST')         #browser required
-
+        self.end_headers()
         ## Edison control 
         # capture the image and save as the specific name
-        if form['Action'][0] == 'Capture':
+        if 'Action' in form and form['Action'][0] == 'Capture':
             # # dummy
             # f = open('sample.jpg', 'rb')
             # img = f.read()
@@ -93,14 +93,21 @@ class PostHandler(BaseHTTPRequestHandler):
             f2.write(img)
             f2.close()
             camera.DestroyCamera()
-            # self.wfile.write(img)       
-            # self.send_header('Content-Type', 'image/jpeg')        
-        else:
+            self.wfile.write('Success')       
+            # self.send_header('Content-Type', 'image/jpeg')  
+        elif 'Action' in form and form['Action'][0] == 'Move':
             ctrl = _form["ctrl"].value 
-            print ctrl
+            print 'control accepted: ', ctrl
+            force = 1
+            if len(ctrl) < 3:
+                force = 0
+            sp.call(['papercontrol.c', ctrl[0], ctrl[1], force])
+            # time.sleep(30)
+            self.wfile.write('Success')
+
+        else:
             print 'wrong Action'
-        # Begin the response
-        self.end_headers()       
+                
         return
 
 from BaseHTTPServer import HTTPServer
