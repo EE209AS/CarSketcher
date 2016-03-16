@@ -43,7 +43,7 @@ car = CarCameraControl()
                                                       
 for i in range(1,64):                                     
         for j in range(1,48):                       
-                if (j==10||j==54||i==10||i==38):        
+                if (j==1||j==64||i==1||i==48):        
    			sp.Popen(['./penDown.out']).wait()
                         print "pen down"                   
                         sp.Popen(['./straight.out']).wait()
