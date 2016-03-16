@@ -101,7 +101,7 @@ class PostHandler(BaseHTTPRequestHandler):
             force = 1
             if len(ctrl) < 3:
                 force = 0
-            sp.call(['papercontrol.c', ctrl[0], ctrl[1], force])
+            sp.call(['RobotControl/papercontrol.out', str(ctrl[0]), str(ctrl[1]), str(force)])
             # time.sleep(30)
             self.wfile.write('Success')
 
