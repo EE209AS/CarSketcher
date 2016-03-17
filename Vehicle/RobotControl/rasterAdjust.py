@@ -61,8 +61,8 @@ class rasterAdjust:
         if areaMax != 0:
             contourMax = contourMax*ratio
             contourMax=np.int0(contourMax)
-            # cv2.drawContours(frame, [contourMax], 0, (0, 255, 0), 5)
-            # cv2.circle(frame,(cXMax,cYMax),5,(0,0,255),-1)
+            cv2.drawContours(frame, [contourMax], 0, (0, 255, 0), 5)
+            cv2.circle(frame,(cXMax,cYMax),5,(0,0,255),-1)
         return (frame, cXMax, cYMax, areaMax, contourMax)
 
 
@@ -97,7 +97,7 @@ class rasterAdjust:
                     xcenmin=p[0][0]
 
         # print cx, ycenmin, i
-        # cv2.circle(frameTrack,(xcenmin,ycenmin),5,(0,0,255),-1)
+        cv2.circle(frameTrack,(xcenmin,ycenmin),5,(0,0,255),-1)
 
         if mx > xcenmin:
             r = float(ycenmin-my)/(xcenmin-mx)
@@ -107,16 +107,16 @@ class rasterAdjust:
         print r
         if r > 0.2:
             ctr = 1
-            # cv2.putText(frameTrack,"right",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
+            cv2.putText(frameTrack,"right",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
         elif r < -0.2:
             ctr = -1
-            # cv2.putText(frameTrack,"left",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
+            cv2.putText(frameTrack,"left",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
         else:
             ctr = 0
-            # cv2.putText(frameTrack,"go",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
+            cv2.putText(frameTrack,"go",(cx-150,cy-50),cv2.FONT_HERSHEY_SIMPLEX,3,(0,0,255),5)
 
 
-        return (ctr, frameTrack)
+        return (ctr, frameTrack, cx, cy)
 
 
 

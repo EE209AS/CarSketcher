@@ -10,29 +10,31 @@ def rasterCtr():
     cc=CarCameraControl()
     cc.InitCamera()
     ra=rasterAdjust()
-    ctr=-2
-    while(ctr!=0):
 
-        keypressed=cv2.waitKey(1) & 0xFF
-        if keypressed == ord('q'):
-            break
-
-        frame = cc.GetOneVideoFrame()
-
-        try:
-            ctr, frame = ra.RasterAdjust(frame)
-        except:
-            print "error"
-            break
-
-        if ctr == 1:
-            sp.Popen(['./right.out']).wait()
-        elif ctr == -1:
-            sp.Popen(['./left.out']).wait()
-        elif ctr == 0:
-            print "go"
-
+    frame = cc.GetOneVideoFrame()
     cc.DestoryCamera()
+    ctr=-2
+    cx=0
+    cy=0
+    try:
+        ctr, frame, cx, cy = ra.RasterAdjust(frame)
+    except:
+        print "error"
+
+
+    print "==========", cx, cy
+
+    if ctr == 1:
+        sp.Popen(['./right.out']).wait()
+        print "right"
+    elif ctr == -1:
+        sp.Popen(['./left.out']).wait()
+        print "left"
+    elif ctr == 0:
+        print "go"
+    else:
+        print "no adjust"
+
 
 
 

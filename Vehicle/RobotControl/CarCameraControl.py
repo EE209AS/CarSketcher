@@ -13,7 +13,7 @@ class CarCameraControl:
 
     # Camera Control
     def InitCamera(self):
-        self.cap = cv2.VideoCapture(1)
+        self.cap = cv2.VideoCapture(0)
         self.width=self.cap.get(3)
         self.height=self.cap.get(4)
 
@@ -36,20 +36,3 @@ class CarCameraControl:
         corners = np.int0(corners)
         return corners
 
-
-
-    # # Movement Control
-    # def goStraight(self):
-    #     i=0
-    #
-    # def goLeft(self):
-    #     i=0
-    #
-    # def goRight(self):
-    #     i=0
-    #
-    # def goBack(self):
-    #     i=0
-    #
-    # def stop(self):
-    #     i=0
