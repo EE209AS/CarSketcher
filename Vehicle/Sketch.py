@@ -54,16 +54,16 @@ for i in range(1,64):
                         print "move straight"              
                         sp.Popen(['./straight.out']).wait()
         if(i%2==0):                                        
-                print "move 90left"   
-		sp.Popen(['./90left.out']).wait()                     
+                print "move 90 left"   
+		sp.Popen(['./left90.out']).wait()                     
                 print "move straight"             
 		sp.Popen(['./straight.out']).wait()        
-                print "move 90left"               
-		sp.Popen(['./90left.out']).wait()         
+                print "move 90 left"               
+		sp.Popen(['./left90.out']).wait()         
         else:                                             
-                print "move 90right"
-		sp.Popen(['./90right.out']).wait()                       
+                print "move 90 right"
+		sp.Popen(['./right90.out']).wait()                       
                 print "move straight"
 		sp.Popen(['./straight.out']).wait()                      
-                print "move 90right"  
-		sp.Popen(['./90right.out']).wait()
+                print "move 90 right"  
+		sp.Popen(['./right90.out']).wait()
