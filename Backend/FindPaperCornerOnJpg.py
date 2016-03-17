@@ -75,6 +75,83 @@ class FindPaperCornerOnJpg:
             contourMax=np.int0(contourMax)
             # cv2.drawContours(frame, [contourMax], 0, (0, 255, 0), 5)
         return (frame, cXMax, cYMax, areaMax, contourMax)
+    def moving_average(self, a, n=3) :
+        ret = np.cumsum(a, dtype=float)
+        ret[n:] = ret[n:] - ret[:-n]
+        return ret[n - 1:] / n
+
+    def FindCornersFromContour(self, filename, draw=True):
+        frame=cv2.imread(filename)
+        self.width, self.height = frame.shape[1], frame.shape[0]
+        # get the frame to show
+        (frameTrack, cx, cy, areaMax, contour)=self.trackPaper(frame)
+        if len(contour) == 0:
+            return []
+        tan = []
+        i = 0
+        while (i < len(contour)):
+            if i == len(contour) - 1:
+                r = 0
+            else :
+                r = i + 1
+            if contour[i][0][1] - contour[r][0][1] == 0:
+                val = 10000
+            else :
+                val = (contour[i][0][0] - contour[r][0][0]) / (contour[i][0][1] - contour[r][0][1])
+            tan.append(val)
+            i += 1
+        # filtering!
+        tan = self.moving_average(tan, 5)
+        print tan
+        # peak detection
+        tan[0] = np.absolute(tan[0] - tan[len(tan) - 1])
+        for i in range(1, len(tan)):
+            tan[i] = np.absolute(tan[i] - tan[i - 1])
+
+        threshold = np.mean(tan)
+        peaks = []
+        for i in range(0, len(tan)):
+            l = i - 1
+            r = i + 1
+            if i == 0:
+                l = len(tan) - 1
+            if i == len(tan) - 1:
+                r = 0
+            if tan[i] > tan[l] and tan[i] > tan[r] and tan[i] > threshold:
+                # peak detected!
+                peaks.append(i)
+        print peaks
+        if len(peaks) < 4:
+            raise NameError('not enough peaks')
+        else:
+            print 'got a lot: ', len(peaks)
+            cand = []
+            for i in peaks:
+                cand.append(tan[i])
+            cand.sort()
+            res = []
+            for i in peaks:
+                if tan[i] >= cand[3]:
+                    res.append(i)
+        # use patches
+        print res
+        patch_size = 10
+        cs = []
+        for i in res:
+            x0, y0 = contour[i][0][0], contour[i][0][1]
+            ROI = frame[y0-patch_size:y0+patch_size, x0-patch_size:x0+patch_size]
+            gray = cv2.cvtColor(ROI, cv2.COLOR_BGR2GRAY)
+            corner = cv2.goodFeaturesToTrack(gray,1,0.01,10)
+            for j in corner:
+                cx,cy = j.ravel()
+                cx=cx+x0 - patch_size
+                cy=cy+y0 - patch_size
+                cs.append([cx,cy])
+                if draw:
+                    cv2.circle(frame, (int(cx),int(cy)), 15, (0,0,255), -1)
+        if draw:
+            cv2.imwrite(filename + 'corners.jpg', frame)
+        return cs
 
     def FindCorners(self, filename, draw=True):
 
@@ -98,23 +175,24 @@ class FindPaperCornerOnJpg:
         # cv2.circle(frame,(x[0],y[0]),10,(0,0,255),-1)
         # cv2.circle(frame,(x[len(x)-1],y[len(x)-1]),10,(0,0,255),-1)
         # print x[0], x[len(x)-1], y[0], y[len(y)-1]
-        if x[0] > 30:
-            x[0]=x[0]-30
-        if y[0] > 30:
-            y[0]=y[0]-30
-        if self.width-x[len(x)-1]>30:
-            x[len(x)-1]=x[len(x)-1]+30
-        if self.height-y[len(y)-1]>30:
-            y[len(y)-1]=y[len(y)-1]+30
+        bolder = 30
+        if x[0] > bolder:
+            x[0]=x[0]-bolder
+        if y[0] > bolder:
+            y[0]=y[0]-bolder
+        if self.width-x[len(x)-1]>bolder:
+            x[len(x)-1]=x[len(x)-1]+bolder
+        if self.height-y[len(y)-1]>bolder:
+            y[len(y)-1]=y[len(y)-1]+bolder
 
         # cv2.rectangle(frameTrack,(x[0],y[0]),(x[len(x)-1],y[len(y)-1]),(0,0,255),5)
+        # cv2.imwrite(filename + 'bullshit.jpg', frameTrack)
 
         ROI = frame[y[0]:y[len(y)-1], x[0]:x[len(x)-1]]
-
-
-
         # get the 4 corners of the paper
         gray = cv2.cvtColor(ROI, cv2.COLOR_BGR2GRAY)
+        # thresh=cv2.threshold(gray,50,255,cv2.THRESH_BINARY)[1]
+
         FourCorners = cv2.goodFeaturesToTrack(gray,4,0.01,10)
         FourCorners = np.int0(FourCorners)
         cs = []
@@ -125,12 +203,13 @@ class FindPaperCornerOnJpg:
             cs.append([cx,cy])
             if draw:
                 cv2.circle(frame, (cx,cy), 15, (0,0,255), -1)
+        cv2.drawContours(frame, [contour], 0, (0, 255, 0), 5)
         if draw:
-            cv2.imwrite(filename + 'corners.jpg', frame)       
+            cv2.imwrite(filename + 'corners.jpg', frame)
         return cs
         # return frame
     def Dist(self, x1, x2):
-    
+
         if isinstance(x1, np.ndarray):
             return np.linalg.norm(x1 - x2)
 
@@ -138,7 +217,7 @@ class FindPaperCornerOnJpg:
 
     def hasPaper(self, filename, draw=False):
 
-        cs = self.FindCorners(filename, draw)
+        cs = self.FindCornersFromContour(filename, draw)
         if not cs:
             return None
 
@@ -151,11 +230,11 @@ class FindPaperCornerOnJpg:
         r_std1 = np.abs(edges[0] - edges[1]) / float(edges[0] + edges[1])
         r_std2 = np.abs(edges[2] - edges[3]) / float(edges[2] + edges[3])
         r_std3 = np.abs(edges[4] - edges[5]) / float(edges[4] + edges[5])
-        # # detection success!
+        # detection success!
         # if np.std([r_std1, r_std2, r_std3]) < 0.1:
-        #     return cs
-        # else:
-        #     return None
+        if np.std([r_std1, r_std2]) < 0.1:
+            return cs
+        else:
+            print 'fk ', np.std([r_std1, r_std2, r_std3])
+            return None
         return cs
-
-

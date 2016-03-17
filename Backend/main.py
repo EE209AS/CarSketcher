@@ -31,7 +31,7 @@ T = np.zeros((3,1))
 def getImage(name):
     '''
         name -- name of the image
-    '''    
+    '''
     url = host + name
     response = urllib2.urlopen(url)
     f = open(name, 'wb')
@@ -84,7 +84,7 @@ def calcCor_prev():
             cs.append([x,y])
         css.append(cs)
         print cs
-        
+
     X_cam = reproject('sample2.jpg', 'sample1.jpg', css[1], css[0])[0]  # just take arbibtrary!
     X_car = np.dot(R, X_cam) + T
     print X_car
@@ -98,13 +98,14 @@ def calcCor():
     fpc = FPC()
     for i in range(1,3):
         cs = fpc.hasPaper('sample' + str(i) + '.jpg', True)
+
         if cs is None:
             raise NameError('paper detection failed!')
         css.append(cs)
         print cs
     Xs = reproject('sample2.jpg', 'sample1.jpg', css[1], css[0], camera_height) # just take arbibtrary!
     print Xs
-    # #what returned is an np array!
+    # what returned is an np array!
     # X_cam = np.reshape(Xs[0], (3,1))
     # X_car = np.dot(R, X_cam) + T
     # return X_car[:2]
@@ -137,11 +138,19 @@ if __name__ == "__main__":
         print pushControl([-1, -1])
     elif sys.argv[1] == 'calc':
         # ensure sample1 and sample2 are already there!
+        if len(sys.argv) == 3 and sys.argv[2] == 'ptest':
+            fpc = FPC()
+            for i in range(1,3):
+                cs = fpc.hasPaper('sample' + str(i) + '.jpg', True)
+                if cs is None:
+                    raise NameError('paper detection failed!')
+            exit()
+        # regular test
         cor = calcCor()
         cor = tooClose(cor)
         if len(sys.argv) == 3 and sys.argv[2] == 'test':
             pass
-        else : 
+        else :
             pushControl(cor)
 
     elif sys.argv[1] == 'start':
@@ -162,8 +171,8 @@ if __name__ == "__main__":
                     raise NameError(iname + 'paper detection failed!')
                 # idle phase
                 if count % 2 == 0:
-                    pushControl([-1,-1]) 
-                # start triangulation            
+                    pushControl([-1,-1])
+                # start triangulation
                 css[count % 2] = cor
                 if not None in css:
                     cor = calculateCoordinate(css)
@@ -187,11 +196,3 @@ if __name__ == "__main__":
 
     else:
         print 'error command'
-
-
-        
-
-
-
-
-
