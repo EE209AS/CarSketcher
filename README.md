@@ -44,10 +44,6 @@
 * Send back the image to draw
 * Send back the video
 
-#### Backend
-* Update the algorithm to find corners
-* ...
-
   
   
   
