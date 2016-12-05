@@ -12,11 +12,9 @@
 9, Then the car should move to one corner of the paper and send back to webpage that the car is ready to draw  
 10, The user press StartDraw button and the car start drawing  
 
+#### WebPage
 
-## TODO !!!!!  
-#### Webpage
-
-* Rearrange the web page. The web page should contain:
+* The web page contains:
   - IP address input
   - Start button for overall 
   - Textview to show the car current status and give instr to user
